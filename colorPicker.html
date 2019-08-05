@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>color picker</title>
+    <style type="text/css">
+      .color-box {
+        width: 300px;
+        margin: 100px auto;
+        background: rgb(255, 255, 255);
+        border-radius: 2px;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 2px, rgba(0, 0, 0, 0.3) 0px 4px 8px;
+      }
+      .color-line {
+        position: relative;
+        width: 210px;
+        height: 14px;
+        margin-bottom: 10px;
+        background: linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%);
+      }
+      .color-alpha {
+        position: relative;
+        width: 210px;
+        height: 14px;
+        background: linear-gradient(to right, rgba(86, 44, 140, 0) 0%, rgb(86, 44, 140) 100%);
+      }
+      .color-alpha::before {
+        content: '';
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==") left center;
+      }
+      .color-circle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        transform: translate(-9px, -1px);
+        background-color: rgb(248, 248, 248);
+        box-shadow: rgba(0, 0, 0, 0.37) 0px 1px 4px 0px;
+      }
+      .color-alpha-circle {
+        left: 100%;
+      }
+      .color-input {
+        display: inline-flex;
+        padding-top: 10px;
+      }
+      .color-input span {
+        display: flex;
+        justify-content: center;
+        background: rgb(240, 240, 240);
+        height: 22px;
+        width: 22px;
+        line-height: 22px;
+        border-radius: 4px 0px 0px 4px;
+        color: rgb(152, 161, 164);
+        font-size: 14px;
+      }
+      .color-input input {
+        width: 50px;
+        font-size: 14px;
+        color: rgb(102, 102, 102);
+        border: 0px;
+        outline: none;
+        height: 20px;
+        box-shadow: rgb(240, 240, 240) 0px 0px 0px 1px inset;
+        border-radius: 0px 4px 4px 0px;
+        float: left;
+        padding-left: 8px;
+        font-size: 12px;
+        line-height: 20px;
+      }
+      .color-input-alpha input {
+        border-radius: 0px;
+      }
+      .color-input-alpha span:last-child {
+        border-radius: 0px 4px 4px 0px;
+      }
+      .color-line-alpha {
+        display: inline-block;
+      }
+      .color-square {
+        position: relative;
+        background: rgb(110, 0, 255);
+        width: 100%;
+        height: 160px;
+      }
+      .color-square::before {
+        content: '';
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        background: linear-gradient(to right, rgb(255, 255, 255), rgba(255, 255, 255, 0));
+      }
+      .color-square::after {
+        content: '';
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        background: linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0));
+      }
+      .color-show-line-alpha {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .color-square-info {
+        padding: 16px 16px 12px;
+      }
+      .color-show {
+        position: relative;
+        width: 30px;
+        height: 30px;
+        border-radius: 3px;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0.25) 0px 0px 4px inset;
+      }
+      .color-show::before {
+        content: '';
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        /* background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==") left center; */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="color-box">
+      <div class="color-square"></div>
+      <div class="color-square-info">
+        <div class="color-show-line-alpha">
+          <div class="color-show"></div>
+          <div class="color-line-alpha">
+            <div class="color-line">
+              <div class="color-circle color-line-circle"></div>
+            </div>
+            <div class="color-alpha">
+              <div class="color-circle color-alpha-circle"></div>
+            </div>
+          </div>
+        </div>
+        <div class="color-inputs">
+          <div class="color-input" style="display: flex;">
+            <span>#</span><input maxlength="6" data-type="hex" />
+          </div>
+          <div class="color-input">
+            <span>R</span><input maxlength="3" data-type="r" style="width: 30px" />
+          </div>
+          <div class="color-input">
+            <span>G</span><input maxlength="3" data-type="g" style="width: 30px" />
+          </div>
+          <div class="color-input">
+            <span>B</span><input maxlength="3" data-type="b" style="width: 30px" />
+          </div>
+          <div class="color-input">
+            <span>A</span><input maxlength="4" data-type="a" style="width: 35px" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const r = [255, 255, 0, 0, 0, 255];
+      const g = [0, 255, 255, 255, 0, 0];
+      const b = [0, 0, 0, 255, 255, 255];
+      function getHexFromRGB(color) {
+        const [r, g, b] = color;
+        const hex = ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        return hex;
+      }
+      function getRGBFromHex(hex) {
+        return [parseInt("0x" + hex.slice(0, 2)), parseInt("0x" + hex.slice(2, 4)), parseInt("0x" + hex.slice(4, 6))];
+      }
+      function getPercentFromRGB(color) {
+        const oriColor = color.map(i => i <= 128 ? 0 : 255);
+        let percentNum = 0;
+        let index = 0;
+        let percentAdd = 0;
+        if (oriColor[0] + oriColor[1] + oriColor[2] === 0) {
+          var max = Math.max.apply(null, color);
+          index = color.indexOf(max) * 2;
+        } else {
+          for (i = 0; i < 6; i++) {
+            if (r[i] === oriColor[0] && g[i] === oriColor[1] && b[i] === oriColor[2]) {
+              index = i;
+              break;
+            }
+          }
+        }
+        let changeRGB = (1 - index) % 3;  // 0r 1g 2b
+        while (changeRGB < 0 ) { changeRGB += 3; }
+        if (changeRGB === -0) {
+          changeRGB = 0;
+        }
+        percentAdd = oriColor[changeRGB] === 0 ? color[changeRGB] / 255 : 255 * (1 - color[changeRGB]);
+        percentNum = (index + percentAdd) * 0.17;
+        return percentNum * 100 + '%';
+      }
+      function getPercentFromHex(hex) {
+        return getPercentFromRGB(getRGBFromHex(hex));
+      }
+      function getRgbaFromBox(box) {
+        const inputs = box.lastElementChild.lastElementChild.children;
+        return [ parseInt(inputs[1].children[1].value),
+        parseInt(inputs[2].children[1].value),
+        parseInt(inputs[3].children[1].value),
+        parseFloat(inputs[4].children[1].value)];
+      }
+      function getHexFromBox(box) {
+        const inputs = box.lastElementChild.lastElementChild.children;
+        return inputs[0].children[1].value;
+      }
+      function colorInitAll(r, g, b, a) {
+        const hex = getHexFromRGB([r, g, b]);
+        const colorLines = document.getElementsByClassName("color-line");
+        for (i = 0; i < colorLines.length; i++) {
+          colorLines[i].children[0].style.left = getPercentFromRGB([r, g, b]);
+        }
+        const colorAlphas = document.getElementsByClassName("color-alpha");
+        for (i = 0; i < colorAlphas.length; i++) {
+          colorAlphas[i].style.background = `linear-gradient(to right, rgba(${r}, ${g}, ${b}, 0) 0%, rgb(${r}, ${g}, ${b}) 100%)`;
+          colorAlphas[i].children[0].style.left = a * 100 + '%';
+        }
+        const colorSquares = document.getElementsByClassName("color-square");
+        for (i = 0; i < colorSquares.length; i++) {
+          colorSquares[i].style.background = `rgb(${r}, ${g}, ${b})`;
+        }
+        const colorShows = document.getElementsByClassName("color-show");
+        for (i = 0; i < colorShows.length; i++) {
+          colorShows[i].style.background = `rgba(${r}, ${g}, ${b}, ${a})`;
+        }
+        const colorInputs = document.getElementsByClassName("color-inputs");
+        for (i = 0; i < colorInputs.length; i++) {
+          colorInputs[i].children[0].children[1].value = hex;
+          colorInputs[i].children[1].children[1].value = r;
+          colorInputs[i].children[2].children[1].value = g;
+          colorInputs[i].children[3].children[1].value = b;
+          colorInputs[i].children[4].children[1].value = a;
+        }
+      }
+      function colorInitOne(r, g, b, a, colorBox, noChange=[]) {
+        const num255 = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])$/;
+        const num1 = /^(0.\d+|0|1)$/;
+        if (num255.test(r) && num255.test(g) && num255.test(b) && num1.test(a)) {
+          const hex = getHexFromRGB([r, g, b]);
+          if (!noChange.includes('color-square')) {
+            colorBox.firstElementChild.style.background = `rgb(${r}, ${g}, ${b})`;
+          }
+          const colorShowLineAlpha = colorBox.lastElementChild.firstElementChild;
+          if (!noChange.includes('color-show')) {
+            colorShowLineAlpha.children[0].style.background = `rgba(${r}, ${g}, ${b}, ${a})`;
+          }
+          if (!noChange.includes('color-line')) {
+            colorShowLineAlpha.children[1].firstElementChild.children[0].style.left = getPercentFromRGB([r, g, b]);
+          }
+          if (!noChange.includes('color-alpha')) {
+            colorShowLineAlpha.children[1].lastElementChild.style.background = `linear-gradient(to right, rgba(${r}, ${g}, ${b}, 0) 0%, rgb(${r}, ${g}, ${b}) 100%)`;
+            colorShowLineAlpha.children[1].lastElementChild.children[0].style.left = a * 100 + '%';
+          }
+          if (!noChange.includes('color-inputs')) {
+            const colorInputs = colorBox.lastElementChild.lastElementChild.children;
+            colorInputs[0].children[1].value = hex;
+            colorInputs[1].children[1].value = r;
+            colorInputs[2].children[1].value = g;
+            colorInputs[3].children[1].value = b;
+            colorInputs[4].children[1].value = a;
+          }
+        }
+      }
+      function handleInputBlur() {
+        let inputs = document.getElementsByTagName('input');
+        for (var i = 0; i < inputs.length; inputs++) {
+          inputs[i].blur();
+        }
+      }
+      window.onload = function () {
+        colorInitAll(80, 44, 100, 0.6);
+        // 处理颜色条拖拽
+        let moveCircle = null; // 当前拖拽的小圆球
+        let container = null; // 拖拽、rgb的父元素
+        let inputContainer = null; // hex rgba 的父元素
+        var colorLineCircles = document.getElementsByClassName("color-line-circle");
+        for (i = 0; i < colorLineCircles.length; i++) {
+          colorLineCircles[i].parentWidth = colorLineCircles[i].parentNode.offsetWidth;
+          colorLineCircles[i].parentLeft = colorLineCircles[i].parentNode.offsetLeft;
+          colorLineCircles[i].onmousedown = handleDragLineCircle;
+        };
+        function handleDragLineCircle(e) {
+          e.preventDefault();
+          handleInputBlur();
+          moveCircle = e.target;
+          container = moveCircle.parentNode.parentNode.parentNode.parentNode;
+          inputContainer = container.lastElementChild;
+          dragLineCircle(e);
+          window.addEventListener('mousemove', dragLineCircle);
+          window.addEventListener('mouseup', cancleDragLineCircle);
+        }
+        function dragLineCircle(e) {
+          e.preventDefault();
+          let percentNum = 0;
+          if (e.target.className === 'color-line' || e.target.className === 'color-box') {
+            percentNum = e.offsetX / moveCircle.parentWidth;
+          } else {
+            const temp = (e.pageX - moveCircle.parentLeft)/moveCircle.parentWidth;
+            percentNum = temp  > 0 ? temp : 0;
+          }
+          moveCircle.style.left = percentNum >= 1 ? '100%' : percentNum * 100 + '%';
+          let colorNow = [];
+          if (percentNum >= 1) {
+            colorNow = [255, 0, 0];
+          } else {
+            const index = Math.floor(percentNum * 100 / 17);
+            const percent = (percentNum * 100) % 17 / 17;
+            let changeRGB = (1 - index) % 3;  // 0r 1g 2b
+            while (changeRGB < 0) { changeRGB += 3; }
+            colorNow = [r[index], g[index], b[index]];
+            colorNow[changeRGB] = colorNow[changeRGB] === 0 ? parseInt(percent * 255) : parseInt(255 * (1 - percent));
+          }
+          const rgba = getRgbaFromBox(container.parentNode);
+          colorInitOne(colorNow[0], colorNow[1], colorNow[2], rgba[3], container.parentNode, ['color-line']);
+        }
+        function cancleDragLineCircle() {
+          moveCircle = container = inputContainer = null;
+          window.removeEventListener('mousemove', dragLineCircle);
+          window.removeEventListener('mouseup', cancleDragLineCircle);
+        }
+        // 处理透明度条拖拽
+        var colorAlphaCircles = document.getElementsByClassName("color-alpha-circle");
+        for (i = 0; i < colorAlphaCircles.length; i++) {
+          colorAlphaCircles[i].parentWidth = colorAlphaCircles[i].parentNode.offsetWidth;
+          colorAlphaCircles[i].parentLeft = colorAlphaCircles[i].parentNode.offsetLeft;
+          colorAlphaCircles[i].onmousedown = handleDragAlphaCircle;
+        };
+        function handleDragAlphaCircle(e) {
+          e.preventDefault();
+          handleInputBlur();
+          moveCircle = e.target;
+          container = moveCircle.parentNode.parentNode.parentNode.parentNode;
+          inputContainer = container.lastElementChild;
+          dragAlphaCircle(e);
+          window.addEventListener('mousemove', dragAlphaCircle)
+          window.addEventListener('mouseup', cancleDragAlphaCircle)
+        }
+        function dragAlphaCircle(e) {
+          e.preventDefault();
+          let percentNum = 0;
+          if (e.target.className === 'color-line' || e.target.className === 'color-box') {
+            percentNum = e.offsetX / moveCircle.parentWidth;
+          } else {
+            const temp = (e.pageX - moveCircle.parentLeft)/moveCircle.parentWidth;
+            percentNum = temp  > 0 ? temp : 0;
+          }
+          percentNum = percentNum > 1 ? 1 : percentNum.toFixed(2);
+          const rgba = getRgbaFromBox(container.parentNode);
+          colorInitOne(rgba[0], rgba[1], rgba[2], percentNum, container.parentNode, ['color-line']);
+        }
+        function cancleDragAlphaCircle() {
+          moveCircle = container = inputContainer = null;
+          window.removeEventListener('mousemove', dragAlphaCircle);
+          window.removeEventListener('mouseup', cancleDragAlphaCircle);
+        }
+        // 处理输入hex rgba
+        var colorInputs = document.getElementsByClassName("color-input");
+        for (i = 0; i < colorInputs.length; i++) {
+          colorInputs[i].children[1].oninput = handleInputColor;
+        }
+        function handleInputColor(e) {
+          container = e.target.parentNode.parentNode.parentNode
+          let rgba = [ 0, 0, 0, 0];
+          if (e.target.dataset.type === 'hex') {
+            const a = getRgbaFromBox(container.parentNode)[3];
+            const h = getHexFromBox(container.parentNode);
+            const rgb = getRGBFromHex(h);
+            rgba = rgb.concat([a]);
+          } else {
+            rgba = getHexFromRGB(container.parentNode);
+          }
+          colorInitOne(rgba[0], rgba[1], rgba[2], rgba[3], container.parentNode);
+        }
+      }
+    </script>
+  </body>
+</html>
