@@ -5,10 +5,17 @@
 
 ## 目录List
 
-- [x] [实现一个拾色器][/colorPicker.html]  
+[实现一个拾色器](https://github.com/LittlehorseXie/practise-hand/blob/master/colorPicker.html)
 
 
 ## Todo List
 
-- [ ] 实现bind
-- [ ] 实现防抖和节流
+- [ ] bind
+- [ ] new
+- [ ] Promise
+- [ ] 防抖和节流
+- [ ] 双向数据绑定
+
+
+
+
