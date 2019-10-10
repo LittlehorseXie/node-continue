@@ -2,7 +2,6 @@ class Promise {
   constructor(executor) {
     this.status = 'pending'
     this.value = undefined
-    this.reason = undefined
     // 调用resolve之后才触发then内的函数执行
     this.onFulfilledCallbacks = []
     this.onRejectedCallbacks = []
@@ -13,10 +12,10 @@ class Promise {
         this.onFulfilledCallbacks.forEach(cb => cb())
       }
     }
-    let reject = reason => {
+    let reject = value => {
       if (this.status === 'pending') {
         this.status = 'rejected'
-        this.reason = reason
+        this.value = value
         this.onRejectedCallbacks.forEach(cb => cb());
       }
     }
@@ -37,7 +36,7 @@ class Promise {
         // 非等待态，直接执行
         setTimeout(() => {
           try {
-            const x = this.status === 'fulfilled' ? onFulfilled(this.value) : onRejected(this.reason)
+            const x = this.status === 'fulfilled' ? onFulfilled(this.value) : onRejected(this.value)
             resolvePromise(promise2, x, resolve, reject)
           } catch (e) {
             reject(e);
@@ -58,7 +57,7 @@ class Promise {
         this.onRejectedCallbacks.push(() => {
           setTimeout(() => {
             try {
-              const x = onRejected(this.reason)
+              const x = onRejected(this.value)
               resolvePromise(promise2, x, resolve, reject)
             } catch (e) {
               reject(e);
