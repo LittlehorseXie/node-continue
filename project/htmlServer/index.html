@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <title>策略验证工具</title>
+</head>
+<style>
+    .table {
+        margin-top: 20px;
+    }
+</style>
+<body>
+    <div id="app" class="container">
+        <div class="top">
+            <el-select v-model="value" multiple style="width: 600px" placeholder="请选择对比结果" @change="handleChange">
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                </el-option>
+            </el-select>
+            <el-button type="primary" @click="sumbit">对比</el-button>
+        </div>
+        <div class="table">
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="area_name" label="片区名称"></el-table-column>
+                <el-table-column prop="date" label="月份"></el-table-column>
+                <el-table-column prop="is_better" label="是否更优"></el-table-column>
+                <el-table-column prop="origin_package" label="原包数"></el-table-column>
+                <el-table-column prop="new_package" label="新线路包数"></el-table-column>
+                <el-table-column prop="origin_taskmileage" label="原任务里程"></el-table-column>
+                <el-table-column prop="new_taskmileage" label="任务里程"></el-table-column>
+                <el-table-column prop="origin_emptymileage" label="原空驶里程"></el-table-column>
+                <el-table-column prop="new_emptymileage" label="空驶里程"></el-table-column>
+                <el-table-column prop="origin_worktime" label="原平均工作时间"></el-table-column>
+                <el-table-column prop="new_worktime" label="平均工作时间"></el-table-column>
+                <el-table-column prop="origin_maxworktime" label="原最长工作时间"></el-table-column>
+                <el-table-column prop="new_maxworktime" label="最长工作时间"></el-table-column>
+                <el-table-column prop="scheduleresult" label="排班结果"></el-table-column>
+                <el-table-column prop="address" label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="handleClick(scope.row)" type="text" size="small">导出结果</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>                                                                                                                                                               
+    </div>
+    <script>
+        var instance = axios.create({
+            baseURL: 'http://localhost:3004'
+        });
+        var app = new Vue({
+            el: '#app',
+            data: {
+                schedule_ids: [],
+                value: [],
+                tableData: [],
+                options: [],
+            },
+            mounted: function () {
+                instance.get('/api/tools/api/schedulelisttool').then(res => {
+                    console.log(res.data.data);
+                    if (res.data.data) {
+                        var list = res.data.data.list.map(item => ({
+                            value: item.schedule_id,
+                            label: item.name + ' ' + '(' + item.create_time + ')'
+                        }));
+                        this.options = list;
+                    } else {
+                        alert(res.data.errmsg || '获取排班班次结果失败')
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            methods: {
+                handleChange(value) {
+                    this.schedule_ids = value;
+                    console.log(this.schedule_ids);
+                },
+                sumbit() {
+                    const para = new URLSearchParams();
+                    para.append('schedule_ids', this.schedule_ids);
+                    instance.post('/api/tools/api/batchschedulingtool', para).then(res => {
+                        instance.get('/api/tools/api/getschedulelisttool', {
+                        }).then(res => {
+                            this.tableData = res.data.list;
+                        }).catch(err => {
+                            console.log(err);
+                        })
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
+                handleClick(row) {
+                    //结果导出
+                    axios.get('http://10.188.60.148:8108/api/tools/api/exportresulttool', {
+                        params: {
+                            contrastresultid: row.contrastresultid
+                        }
+                    }).then(res => {
+
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
+            }
+        })
+    </script>
+</body>
+</html>

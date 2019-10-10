@@ -5,7 +5,7 @@
 
 ## 目录List
 
-[实现一个拾色器](https://github.com/LittlehorseXie/practise-hand/blob/master/colorPicker.html)
+[实现一个拾色器](https://github.com/LittlehorseXie/practise-hand/blob/master/html/colorPicker.html)
 
 
 ## Todo List
